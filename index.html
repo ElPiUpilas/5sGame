@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Ejercicio interactivo de las 5S de Lean/Kaizen: vive el impacto de cada S en carne propia.">
+  <title>Ejercicio 5S — Lean en carne propia</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E5%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/rounds.css">
+</head>
+<body>
+  <main id="app">
+
+    <section class="screen is-active" data-screen="welcome">
+      <div class="screen-inner">
+        <div class="lang-switch" role="group" aria-label="Language">
+          <span class="lang-label" data-i18n="welcome.langLabel">Idioma</span>
+          <button type="button" class="lang-btn" data-lang-btn="es" aria-pressed="true">Español</button>
+          <button type="button" class="lang-btn" data-lang-btn="en" aria-pressed="false">English</button>
+        </div>
+        <h1 class="title title-blue" data-i18n="welcome.title">Ejercicio 5S</h1>
+        <p class="lede" data-i18n-html="welcome.lede"></p>
+        <div class="card">
+          <h2 data-i18n="welcome.cardS.title">Las 5 S</h2>
+          <ol class="s-list">
+            <li data-i18n-html="welcome.cardS.seiri"></li>
+            <li data-i18n-html="welcome.cardS.seiton"></li>
+            <li data-i18n-html="welcome.cardS.seiso"></li>
+            <li data-i18n-html="welcome.cardS.seiketsu"></li>
+            <li data-i18n-html="welcome.cardS.shitsuke"></li>
+          </ol>
+        </div>
+        <div class="card">
+          <h2 data-i18n="welcome.cardMech.title">La mecánica</h2>
+          <p data-i18n-html="welcome.cardMech.p1"></p>
+          <p data-i18n="welcome.cardMech.p2"></p>
+        </div>
+        <button class="btn btn-primary" id="btn-start" data-i18n="welcome.btnStart">Comenzar</button>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="preRound">
+      <div class="screen-inner">
+        <p class="eyebrow" id="pre-eyebrow">Ronda 1 de 5</p>
+        <h1 class="title" id="pre-title">—</h1>
+        <p class="lede" id="pre-description">—</p>
+        <div class="card card-task">
+          <p class="small" data-i18n="pre.task">Tu tarea</p>
+          <h2 class="task-title" data-i18n-html="pre.taskTitle"></h2>
+          <p class="small" data-i18n="pre.taskSub">¿Hasta qué número llegas en 20 segundos?</p>
+        </div>
+        <button class="btn btn-primary" id="btn-pre-start" data-i18n="pre.btnStart">Empezar (20 s)</button>
+      </div>
+    </section>
+
+    <section class="screen screen-play" data-screen="play">
+      <header class="hud" id="hud">
+        <div class="hud-cell">
+          <span class="hud-label" data-i18n="hud.next">Siguiente</span>
+          <span class="hud-value" id="hud-next" aria-live="polite">1</span>
+        </div>
+        <div class="hud-cell">
+          <span class="hud-label" data-i18n="hud.time">Tiempo</span>
+          <span class="hud-value" id="hud-time">20.0s</span>
+        </div>
+        <div class="hud-cell">
+          <span class="hud-label" data-i18n="hud.errors">Errores</span>
+          <span class="hud-value" id="hud-errors">0</span>
+        </div>
+      </header>
+      <div class="board-wrap">
+        <div class="board" id="board"></div>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="postRound">
+      <div class="screen-inner">
+        <p class="eyebrow" id="post-eyebrow">Ronda 1 completada</p>
+        <h1 class="title title-red" id="post-title">¿Cómo te fue?</h1>
+        <div class="card card-result">
+          <p class="small" data-i18n="post.llegasteAl">Llegaste al número</p>
+          <p class="result-big" id="post-highest">—</p>
+          <p class="small" id="post-delta"></p>
+          <p class="small muted" id="post-errors">—</p>
+        </div>
+        <button class="btn btn-primary" id="btn-post-next">Siguiente ronda</button>
+      </div>
+    </section>
+
+    <section class="screen" data-screen="summary">
+      <div class="screen-inner">
+        <p class="eyebrow" data-i18n="summary.eyebrow">Shitsuke — Disciplina</p>
+        <h1 class="title title-blue" data-i18n="summary.title">¡Bien hecho!</h1>
+        <p class="lede" data-i18n="summary.lede"></p>
+        <div class="card">
+          <h2 data-i18n="summary.progress">Tu progreso</h2>
+          <div class="chart" id="chart"></div>
+        </div>
+        <div class="card">
+          <h2 data-i18n="summary.seiketsuNeeds">Seiketsu necesita Shitsuke</h2>
+          <p data-i18n-html="summary.sustain1"></p>
+          <p class="small muted" data-i18n="summary.sustain2"></p>
+        </div>
+        <button class="btn btn-primary" id="btn-restart" data-i18n="summary.btnRestart">Reiniciar</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="./js/main.js"></script>
+</body>
+</html>

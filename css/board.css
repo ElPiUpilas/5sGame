@@ -1,0 +1,170 @@
+/* ── Board ───────────────────────────────────────────── */
+.board {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+/* ── Dirt layer — warm amber overlay ────────────────── */
+.dirt-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .9s ease;
+  mix-blend-mode: normal;
+}
+.board.is-dirty .dirt-layer { opacity: 1; }
+
+/* ── Number tiles — chip style ───────────────────────── */
+.num-tile {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f2e8;
+  border: 1.5px solid #c8b89a;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.13), inset 0 1px 0 rgba(255,255,255,0.6);
+  padding: 0;
+  color: var(--ink);
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  white-space: nowrap;
+  transition: opacity .5s ease, box-shadow .15s ease;
+  will-change: transform;
+}
+.num-tile:focus { outline: none; }
+.num-tile:focus-visible { outline: 2px dashed var(--blue); outline-offset: 4px; }
+
+/* Dimmed tiles (dirty rounds): very faint but readable */
+.board.is-dirty .num-tile.is-dim { opacity: 0.22; }
+/* Keep dim tiles faded even after cleaning — preserves difficulty */
+.board:not(.is-dirty) .num-tile.is-dim { opacity: 0.38; }
+
+/* Underline for 6 and 9 to distinguish when rotated */
+.num-tile.has-underline {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+}
+
+/* Correct: struck through, ghosted */
+.num-tile.is-correct {
+  background: #e8f0e8;
+  border-color: #aacbaa;
+  color: var(--muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--muted);
+  pointer-events: none;
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+/* Dirt layer opacity controlled by tweak */
+.board.is-dirty .dirt-layer {
+  opacity: var(--dirt-opacity-max, 1);
+}
+
+/* Target hint — only animate when body.hint-on */
+body.hint-on .num-tile.is-target {
+  color: var(--blue) !important;
+  animation: tilePulse 1.5s ease-in-out infinite;
+}
+@keyframes tilePulse {
+  0%, 100% { text-shadow: 0 0 0 transparent; filter: brightness(1); }
+  50%       { text-shadow: 0 0 18px var(--blue-glow), 0 0 36px var(--blue-glow); filter: brightness(1.3); }
+}
+
+/* Wrong click: shake */
+.num-tile.shake {
+  animation: tileShake .35s ease;
+}
+@keyframes tileShake {
+  0%, 100% { transform: var(--tile-transform, none); }
+  20%       { transform: var(--tile-transform, none) translateX(-7px); }
+  40%       { transform: var(--tile-transform, none) translateX(7px); }
+  60%       { transform: var(--tile-transform, none) translateX(-4px); }
+  80%       { transform: var(--tile-transform, none) translateX(4px); }
+}
+
+/* ── Round 3: 3×3 grid lines ─────────────────────────── */
+.board.with-grid-3::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to right,  transparent calc(33.333% - 1px), rgba(0,0,0,0.18) calc(33.333% - 1px), rgba(0,0,0,0.18) calc(33.333% + 1px), transparent calc(33.333% + 1px)),
+    linear-gradient(to right,  transparent calc(66.666% - 1px), rgba(0,0,0,0.18) calc(66.666% - 1px), rgba(0,0,0,0.18) calc(66.666% + 1px), transparent calc(66.666% + 1px)),
+    linear-gradient(to bottom, transparent calc(33.333% - 1px), rgba(0,0,0,0.18) calc(33.333% - 1px), rgba(0,0,0,0.18) calc(33.333% + 1px), transparent calc(33.333% + 1px)),
+    linear-gradient(to bottom, transparent calc(66.666% - 1px), rgba(0,0,0,0.18) calc(66.666% - 1px), rgba(0,0,0,0.18) calc(66.666% + 1px), transparent calc(66.666% + 1px));
+  z-index: 0;
+}
+
+/* ── Round 5: 5×10 standardized grid ────────────────── */
+.board.layout-grid-5x10 {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 0;
+  background: var(--bg);
+}
+.board.layout-grid-5x10 .cell {
+  position: relative;
+  border: 1px solid rgba(0,0,0,0.08);
+  margin: -1px 0 0 -1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+  z-index: 0;
+}
+/* Grid layout: tiles inside cells are static, no absolute pos */
+.board.layout-grid-5x10 .num-tile {
+  position: static;
+  transform: var(--tile-transform, none);
+  background: #f8f2e8;
+  border: 1.5px solid #c8b89a;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.13), inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+/* Persistent dim: preserves faded state from earlier rounds (e.g. grid round) */
+.num-tile.is-persistent-dim { opacity: 0.28; }
+.confetti-particle {
+  position: fixed;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 9999;
+  animation: confettiFly 0.7s ease-out forwards;
+}
+@keyframes confettiFly {
+  0%   { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; }
+  100% { transform: translate(var(--cx), var(--cy)) rotate(var(--cr)) scale(0.4); opacity: 0; }
+}
+
+/* ── Clean animation (Shine round) ──────────────────── */
+.board.clean-anim {
+  animation: cleanFlash 1.2s ease;
+}
+@keyframes cleanFlash {
+  0%   { background: var(--bg); }
+  25%  { background: oklch(94% 0.06 255); }
+  60%  { background: oklch(96% 0.04 255); }
+  100% { background: var(--bg); }
+}
+
+@media (max-width: 599px) {
+  .num-tile { font-size: 1.05rem; }
+}

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="theme-color" content="#f5f4f0">
+  <meta name="description" content="Ejercicio interactivo de las 5S de Lean/Kaizen: vive el impacto de cada S en carne propia.">
+  <title>Ejercicio 5S — Lean en carne propia</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%231d6bff'/%3E%3Ctext y='.85em' x='50' text-anchor='middle' font-size='72' font-family='sans-serif' font-weight='800' fill='white'%3E5%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./css/theme.css?v=8">
+  <link rel="stylesheet" href="./css/board.css?v=8">
+</head>
+<body>
+  <main id="app">
+
+    <!-- ── Welcome ──────────────────────────────────── -->
+    <section class="screen is-active" data-screen="welcome">
+      <div class="screen-inner">
+        <div class="lang-switch" role="group" aria-label="Language">
+          <span class="lang-label" data-i18n="welcome.langLabel">Idioma</span>
+          <button type="button" class="lang-btn" data-lang-btn="es" aria-pressed="true">Español</button>
+          <button type="button" class="lang-btn" data-lang-btn="en" aria-pressed="false">English</button>
+        </div>
+        <p class="eyebrow">Lean / Kaizen</p>
+        <h1 class="title title-blue" data-i18n="welcome.title">Ejercicio 5S</h1>
+        <p class="lede" data-i18n-html="welcome.lede"></p>
+        <div class="card">
+          <h2 data-i18n="welcome.cardS.title">Las 5 S</h2>
+          <ol class="s-list">
+            <li data-i18n-html="welcome.cardS.seiri"></li>
+            <li data-i18n-html="welcome.cardS.seiton"></li>
+            <li data-i18n-html="welcome.cardS.seiso"></li>
+            <li data-i18n-html="welcome.cardS.seiketsu"></li>
+            <li data-i18n-html="welcome.cardS.shitsuke"></li>
+          </ol>
+        </div>
+        <div class="card">
+          <h2 data-i18n="welcome.cardMech.title">La mecánica</h2>
+          <p data-i18n-html="welcome.cardMech.p1"></p>
+          <p data-i18n="welcome.cardMech.p2"></p>
+        </div>
+        <button class="btn btn-primary" id="btn-start" data-i18n="welcome.btnStart">Comenzar</button>
+      </div>
+    </section>
+
+    <!-- ── Pre-round ─────────────────────────────────── -->
+    <section class="screen" data-screen="preRound">
+      <div class="screen-inner">
+        <p class="eyebrow" id="pre-eyebrow">Ronda 1 de 5</p>
+        <h1 class="title" id="pre-title">—</h1>
+        <p class="lede" id="pre-description">—</p>
+        <div id="progress-track-pre"></div>
+        <div class="card card-task">
+          <p class="small muted" data-i18n="pre.task">Tu tarea</p>
+          <h2 class="task-title" data-i18n-html="pre.taskTitle"></h2>
+          <p class="small muted" data-i18n="pre.taskSub">¿Hasta qué número llegas en 20 segundos?</p>
+        </div>
+        <button class="btn btn-primary" id="btn-pre-start" data-i18n="pre.btnStart">Empezar (20 s)</button>
+      </div>
+    </section>
+
+    <!-- ── Play ──────────────────────────────────────── -->
+    <section class="screen screen-play" data-screen="play">
+      <header class="hud" id="hud">
+        <div class="hud-cell">
+          <span class="hud-label" data-i18n="hud.next">Siguiente</span>
+          <span class="hud-value" id="hud-next" aria-live="polite">1</span>
+        </div>
+        <div class="hud-cell">
+          <span class="hud-label" data-i18n="hud.time">Tiempo</span>
+          <span class="hud-value" id="hud-time">20.0s</span>
+        </div>
+        <div class="hud-cell">
+          <span class="hud-label" data-i18n="hud.errors">Errores</span>
+          <span class="hud-value" id="hud-errors">0</span>
+        </div>
+      </header>
+      <div class="board-wrap">
+        <div class="board" id="board"></div>
+      </div>
+    </section>
+
+    <!-- ── Post-round ────────────────────────────────── -->
+    <section class="screen" data-screen="postRound">
+      <div class="screen-inner">
+        <p class="eyebrow" id="post-eyebrow">Ronda 1 completada</p>
+        <h1 class="title" id="post-title">¿Cómo te fue?</h1>
+        <div id="progress-track-post"></div>
+        <div class="card card-result">
+          <p class="small muted" data-i18n="post.llegasteAl">Llegaste al número</p>
+          <p class="result-big" id="post-highest">—</p>
+          <p class="small" id="post-delta"></p>
+          <p class="small muted" id="post-errors">—</p>
+        </div>
+        <button class="btn btn-primary" id="btn-post-next">Siguiente ronda</button>
+      </div>
+    </section>
+
+    <!-- ── Summary ───────────────────────────────────── -->
+    <section class="screen" data-screen="summary">
+      <div class="screen-inner">
+        <p class="eyebrow" data-i18n="summary.eyebrow">Shitsuke — Disciplina</p>
+        <h1 class="title title-blue" data-i18n="summary.title">¡Bien hecho!</h1>
+        <p class="lede" data-i18n="summary.lede"></p>
+        <div class="card">
+          <h2 data-i18n="summary.progress">Tu progreso</h2>
+          <div class="chart" id="chart"></div>
+        </div>
+        <div class="card">
+          <h2 data-i18n="summary.seiketsuNeeds">Seiketsu necesita Shitsuke</h2>
+          <p data-i18n-html="summary.sustain1"></p>
+          <p class="small muted" data-i18n="summary.sustain2"></p>
+        </div>
+        <button class="btn btn-primary" id="btn-restart" data-i18n="summary.btnRestart">Reiniciar</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── Tweaks panel ───────────────────────────────── -->
+  <div id="tweaks-panel" role="dialog" aria-label="Tweaks">
+    <h3>Tweaks</h3>
+
+    <div class="tweak-toggle">
+      <span>Target hint</span>
+      <button class="toggle-switch" id="tw-hint" aria-pressed="false"></button>
+    </div>
+
+    <div class="tweak-row">
+      <div class="tweak-label">
+        <span>Number size</span>
+        <span class="tweak-val" id="tw-size-val">1.0×</span>
+      </div>
+      <input type="range" id="tw-size" min="0.7" max="2.5" step="0.1" value="1.0">
+    </div>
+
+    <div class="tweak-row">
+      <div class="tweak-label">
+        <span>Dirt intensity</span>
+        <span class="tweak-val" id="tw-dirt-val">Medium</span>
+      </div>
+      <input type="range" id="tw-dirt" min="0" max="2" step="1" value="1">
+    </div>
+
+    <div class="tweak-row">
+      <div class="tweak-label">
+        <span>Timer</span>
+        <span class="tweak-val" id="tw-timer-val">20s</span>
+      </div>
+      <input type="range" id="tw-timer" min="0" max="3" step="1" value="1">
+    </div>
+  </div>
+
+  <script src="./js/bundle-v12.js"></script>
+
+  <script>
+    // ── Tweaks ────────────────────────────────────────
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "hintOn": false,
+      "sizeMultiplier": 2.5,
+      "dirtLevel": 2,
+      "timerIndex": 1
+    }/*EDITMODE-END*/;
+
+    const TIMER_OPTIONS  = [10, 20, 30, 45];
+    const TIMER_LABELS   = ['10s','20s','30s','45s'];
+    const DIRT_LABELS    = ['Low','Medium','Hard'];
+    // Dirt opacity maxima per level
+    const DIRT_OPACITIES = ['0.30','0.65','0.95'];
+
+    window.GAME_TWEAKS = { ...TWEAK_DEFAULTS };
+
+    function applyTweaks() {
+      const t = window.GAME_TWEAKS;
+      const root = document.documentElement;
+
+      // Tile size
+      const base = 72;
+      root.style.setProperty('--tile-size', (base * t.sizeMultiplier) + 'px');
+
+      // Dirt opacity via CSS var
+      root.style.setProperty('--dirt-opacity-max', DIRT_OPACITIES[t.dirtLevel]);
+
+      // Timer — expose for round.js to read
+      window.GAME_TIMER_MS = TIMER_OPTIONS[t.timerIndex] * 1000;
+
+      // Target hint — body class toggles the CSS animation
+      document.body.classList.toggle('hint-on', t.hintOn);
+    }
+
+    function syncUI() {
+      const t = window.GAME_TWEAKS;
+      document.getElementById('tw-hint').classList.toggle('on', t.hintOn);
+      document.getElementById('tw-hint').setAttribute('aria-pressed', String(t.hintOn));
+      document.getElementById('tw-size').value = t.sizeMultiplier;
+      document.getElementById('tw-size-val').textContent = t.sizeMultiplier.toFixed(1) + '×';
+      document.getElementById('tw-dirt').value = t.dirtLevel;
+      document.getElementById('tw-dirt-val').textContent = DIRT_LABELS[t.dirtLevel];
+      document.getElementById('tw-timer').value = t.timerIndex;
+      document.getElementById('tw-timer-val').textContent = TIMER_LABELS[t.timerIndex];
+    }
+
+    // Wire controls
+    document.getElementById('tw-hint').addEventListener('click', () => {
+      window.GAME_TWEAKS.hintOn = !window.GAME_TWEAKS.hintOn;
+      applyTweaks(); syncUI();
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { hintOn: window.GAME_TWEAKS.hintOn }}, '*');
+    });
+
+    document.getElementById('tw-size').addEventListener('input', e => {
+      window.GAME_TWEAKS.sizeMultiplier = parseFloat(e.target.value);
+      applyTweaks(); syncUI();
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { sizeMultiplier: window.GAME_TWEAKS.sizeMultiplier }}, '*');
+    });
+
+    document.getElementById('tw-dirt').addEventListener('input', e => {
+      window.GAME_TWEAKS.dirtLevel = parseInt(e.target.value);
+      applyTweaks(); syncUI();
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { dirtLevel: window.GAME_TWEAKS.dirtLevel }}, '*');
+    });
+
+    document.getElementById('tw-timer').addEventListener('input', e => {
+      window.GAME_TWEAKS.timerIndex = parseInt(e.target.value);
+      applyTweaks(); syncUI();
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { timerIndex: window.GAME_TWEAKS.timerIndex }}, '*');
+    });
+
+    // Tweaks toggle from host
+    window.addEventListener('message', e => {
+      if (e.data?.type === '__activate_edit_mode')   document.getElementById('tweaks-panel').classList.add('is-open');
+      if (e.data?.type === '__deactivate_edit_mode') document.getElementById('tweaks-panel').classList.remove('is-open');
+    });
+    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+
+    // Boot
+    applyTweaks();
+    syncUI();
+  </script>
+</body>
+</html>
